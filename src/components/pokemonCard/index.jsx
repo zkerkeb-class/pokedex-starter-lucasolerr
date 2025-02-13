@@ -1,0 +1,41 @@
+import React from "react";
+
+// Fonction fléchée () => {}
+const PokemonCard = ({ pokemon }) => {
+  return (
+    <div className="bg-white p-4 rounded-2xl shadow-lg w-80 border border-gray-200">
+      <div className="flex justify-center">
+        <img
+          src={pokemon.shiny}
+          alt={pokemon.name.french}
+          width={120}
+          height={120}
+          className="rounded-lg"
+        />
+      </div>
+      <h2 className="text-xl font-bold text-center mt-2">{pokemon.name.french}</h2>
+      <div className="flex justify-center space-x-2 mt-2">
+        {pokemon.typeImages.map((typeImage, index) => {
+          return (
+            <img 
+              key={index}
+              src={typeImage}
+              alt={`Type ${pokemon.type[index]}`} 
+              className="w-1/3 h-full"
+            />
+          ) 
+        })}
+      </div>
+      <div className="mt-4">
+        {Object.entries(pokemon.base).map(([stat, value]) => (
+          <div key={stat} className="flex justify-between border-b py-1">
+            <span className="font-medium text-gray-700">{stat} </span>
+            <span className="font-bold text-gray-900">{value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default PokemonCard;
