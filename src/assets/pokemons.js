@@ -1,5 +1,4 @@
-import {pokemonImages} from './imageLibrary';
-import { pokemonShiny } from './shinyLibrary';
+import {pokemonImages, pokemonShinyImages} from './imageLibrary';
 
 
 const pokemonsList = [{
@@ -3115,6 +3114,6 @@ const typeMapping = {
 export default pokemonsList.map((pokemon) => ({
   ...pokemon,
   image: pokemonImages[pokemon.id],
-  shiny: pokemonShiny[pokemon.id],
+  shiny: pokemonShinyImages[pokemon.id],
   typeImages: pokemon.type.map(type => `/src/assets/types/${typeMapping[type]}.png`)
 }));
