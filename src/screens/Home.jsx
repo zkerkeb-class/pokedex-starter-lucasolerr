@@ -15,9 +15,9 @@ const Home = () => {
     getAllPokemons()
       .then((data) => setPokemons(data))
       .catch(console.error);
-  }, []);
+    }, []);
 
-  const allTypes = [...new Set(pokemons.flatMap((pokemon) => pokemon.type))];
+  const allTypes = [...new Set(pokemons.flatMap((pokemon) => pokemon.types))];
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -33,7 +33,7 @@ const Home = () => {
 
   const filteredPokemons = pokemons.filter((pokemon) => {
     const matchesName = pokemon.name.french.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedTypes.length === 0 || selectedTypes.every((type) => pokemon.type.includes(type));
+    const matchesType = selectedTypes.length === 0 || selectedTypes.every((type) => pokemon.types.includes(type));
     return matchesName && matchesType;
   });
 

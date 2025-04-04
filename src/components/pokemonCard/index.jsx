@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Fonction fléchée () => {}
 const PokemonCard = ({ pokemon }) => {
   const navigate = useNavigate();
+
+  const [isEditing, setIsEditing] = useState();
 
   const handleClick = () => {
     navigate(`/pokemon/${pokemon.id}`);
@@ -27,20 +29,23 @@ const PokemonCard = ({ pokemon }) => {
             <img 
               key={index}
               src={typeImage}
-              alt={`Type ${pokemon.type[index]}`} 
+              alt={`Type ${pokemon.types[index]}`} 
               className="w-1/3 h-full"
             />
           ) 
         })}
       </div>
       <div className="mt-4">
-        {Object.entries(pokemon.base).map(([stat, value]) => (
+        {Object.entries(pokemon.stats).map(([stat, value]) => (
           <div key={stat} className="flex justify-between border-b py-1">
             <span className="font-medium text-gray-700">{stat}</span>
             <span className="font-bold text-gray-900">{value}</span>
           </div>
         ))}
       </div>
+      {/* <button onClick={() => setIsEditing(!isEditing)}> */}
+        {/* {isEditing ? 'Annuler' : 'Modifier' } */}
+      {/* </button> */}
     </div>
   );
 };

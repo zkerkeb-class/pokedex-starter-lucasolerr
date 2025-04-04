@@ -24,8 +24,9 @@ const PokemonDetail = () => {
   if (!pokemon) return <p>Chargement...</p>; // Affiche un message de chargement
 
   return (
-    <PokemonCard key={pokemon.id} pokemon={pokemon} />
-  );
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <PokemonCard key={pokemon.id} pokemon={pokemon} />
+    </div>  );
 };
 
 export default PokemonDetail;
