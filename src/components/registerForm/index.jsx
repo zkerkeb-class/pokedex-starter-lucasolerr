@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { registerUser } from '../../services/api'; // Assure-toi que cette fonction existe dans ton api.js
 
-const RegisterForm = () => {
+const RegisterForm = ({ onRegisterSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nom, setNom] = useState('');
   const [error, setError] = useState(null); // Pour afficher les erreurs
-  const navigate = useNavigate();
   
 
   const handleSubmit = async (e) => {
@@ -17,8 +15,8 @@ const RegisterForm = () => {
     try {
       // Appel à la fonction d'inscription
       const data = await registerUser(email, password, nom);
+      onRegisterSuccess(data);
       toast.success('Inscription réussie, vous pouvez maintenant vous connecter !');
-      navigate('/login');
     } catch (err) {
       setError(err.message || 'Une erreur est survenue lors de l\'inscription');
     }
