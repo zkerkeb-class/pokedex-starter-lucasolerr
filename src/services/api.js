@@ -19,10 +19,16 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export const getAllPokemons = async () => {
+export const getAllPokemons = async (page = 1, limit = 20, searchTerm = '', selectedTypes = []) => {
   try {
-    const response = await api.get('/pokemons');
-    return response.data.data;
+    const params = {
+      page,
+      limit,
+      name: searchTerm,
+      type: selectedTypes.join(','), // Envoie les types sélectionnés sous forme de chaîne
+    };
+    const response = await api.get('/pokemons', { params });
+    return response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des Pokémon :', error);
     throw error;
