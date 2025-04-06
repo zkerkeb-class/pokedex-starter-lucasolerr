@@ -6,6 +6,7 @@ import PokemonCard from '../components/pokemonCard';
 import SearchBar from '../components/searchBar';
 import FilterCheckbox from '../components/filterCheckbox';
 import Pagination from '@mui/material/Pagination'; // Importation du composant Pagination de Material-UI
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const [pokemons, setPokemons] = useState([]);
@@ -13,6 +14,7 @@ const Home = () => {
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Page actuelle
   const [totalPages, setTotalPages] = useState(1); // Nombre total de pages
+  const [allTypes, setAllTypes] = useState([]); // Tous les types de pokémons
   const [isLoading, setIsLoading] = useState(false); // Indicateur de chargement
 
   const limit = 20; // Nombre de pokémons par page
@@ -23,34 +25,32 @@ const Home = () => {
       .then((data) => {
         setPokemons(data.pokemons);
         setTotalPages(data.totalPages);
+        setAllTypes(data.types); // Récupère tous les types de pokémons
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
   }, [currentPage, searchTerm, selectedTypes]);
-
-  const allTypes = [...new Set(pokemons.flatMap((pokemon) => pokemon.types))];
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleTypeChange = (type) => {
-    setSelectedTypes((prevTypes) =>
-      prevTypes.includes(type)
-        ? prevTypes.filter((t) => t !== type)
-        : [...prevTypes, type]
-    );
+    setSelectedTypes((prevTypes) => {
+      const newTypes = prevTypes.includes(type)
+        ? prevTypes.filter((t) => t !== type) // Désélectionne le type
+        : [...prevTypes, type]; // Ajoute le type sélectionné
+  
+      // Mettre la page à 1 chaque fois qu'un filtre est modifié
+      setCurrentPage(1);
+  
+      return newTypes;
+    });
   };
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page); // Met à jour la page courante lors de l'interaction avec la pagination
   };
-
-  const filteredPokemons = pokemons.filter((pokemon) => {
-    const matchesName = pokemon.name.french.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedTypes.length === 0 || selectedTypes.every((type) => pokemon.types.includes(type));
-    return matchesName && matchesType;
-  });
 
   return (
     <>
@@ -72,8 +72,8 @@ const Home = () => {
       <div className="flex flex-wrap gap-4 p-4 mt-35 justify-center">
         {isLoading ? (
           <p className="text-center">Chargement...</p>
-        ) : filteredPokemons.length > 0 ? (
-          filteredPokemons.map((pokemon) => (
+        ) : pokemons.length > 0 ? (
+          pokemons.map((pokemon) => (
             <PokemonCard key={pokemon.id} pokemon={pokemon} />
           ))
         ) : (
