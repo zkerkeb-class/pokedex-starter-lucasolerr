@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLoginSuccess = (data) => {
-    login(data.token, data.user.nom); // stocke dans le contexte + localStorage
+    login(data.token, data.user); // stocke dans le contexte + localStorage
     navigate('/'); // Redirige vers la page d'accueil après une connexion réussie
   };
 

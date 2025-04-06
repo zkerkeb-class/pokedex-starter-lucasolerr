@@ -94,3 +94,33 @@ export const registerUser = async (email, password, nom) => {
     throw new Error(error.response?.data?.message || 'Erreur lors de l\'inscription');
   }
 };
+
+export const addFavorite = async (pokemonId) => {
+  try {
+    const response = await api.post(`/user/favorites/${pokemonId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout au favoris :', error);
+    throw error;
+  }
+};
+
+export const removeFavorite = async (pokemonId) => {
+  try {
+    const response = await api.delete(`/user/favorites/${pokemonId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la suppression des favoris :', error);
+    throw error;
+  }
+};
+
+export const getFavorites = async () => {
+  try {
+    const response = await api.get('/user/favorites');
+    return response.data.favorites;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des favoris :', error);
+    throw error;
+  }
+};

@@ -102,7 +102,7 @@ const PokemonForm = ({ isEdit }) => {
           }
         } else {
           const newPokemon = await createPokemon(formData);  // Appel pour créer
-          navigate(`/pokemon/${newPokemon.id}`);
+          navigate(`/pokemon/${newPokemon._id}`);
         }
       } catch (error) {
         setError('Erreur lors de la soumission.');

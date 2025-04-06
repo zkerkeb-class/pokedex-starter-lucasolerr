@@ -70,7 +70,7 @@ const AddPokemonForm = () => {
   
     try {
       const newPokemon = await createPokemon(formData);  // Appel API
-      navigate(`/pokemon/${newPokemon.id}`); // Redirection après création
+      navigate(`/pokemon/${newPokemon._id}`); // Redirection après création
     } catch (error) {
       setError('Erreur lors de la création du Pokémon. Veuillez réessayer.');
     }
