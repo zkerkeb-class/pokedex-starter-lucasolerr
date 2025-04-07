@@ -55,6 +55,10 @@ const Home = () => {
   };
 
   useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  useEffect(() => {
     // On refait l'appel à l'API pour récupérer les favoris à chaque activation/désactivation du filtre
     if (isFavoriteFilter) {
       fetchFavorites();
@@ -166,7 +170,7 @@ const Home = () => {
           <p className="text-center">Chargement...</p>
         ) : currentPokemons.length > 0 ? (
           currentPokemons.map((pokemon) => (
-            <PokemonCard key={pokemon.id} pokemon={pokemon} />
+            <PokemonCard key={pokemon.id} pokemon={pokemon} onToggleFavorite={fetchFavorites}/>
           ))
         ) : (
           <p className="text-center">:( Aucun Pokémon trouvé</p>

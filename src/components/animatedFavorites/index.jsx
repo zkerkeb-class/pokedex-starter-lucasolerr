@@ -1,16 +1,31 @@
-import React from 'react';
-import './index.css'; // Assurez-vous d'importer le fichier CSS mis à jour
+import React, { useEffect, useState } from 'react';
+import './index.css';
 
 const AnimatedFavorites = ({ favoritesList }) => {
+  const [animationDurations, setAnimationDurations] = useState({});
+
+  useEffect(() => {
+    // Crée une copie locale pour éviter de modifier l'état directement
+    const newDurations = { ...animationDurations };
+
+    favoritesList.forEach((pokemon) => {
+      if (!newDurations[pokemon.id]) {
+        newDurations[pokemon.id] = `${Math.random() * 7 + 5}s`;
+      }
+    });
+
+    setAnimationDurations(newDurations);
+  }, [favoritesList]);
+
   return (
     <div className="pokemonAnimationContainer">
       {favoritesList.map((pokemon) => (
         <img
           key={pokemon.id}
           src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemon.name.english.toLowerCase()}.gif`}
-          alt={pokemon.name}
+          alt={pokemon.name.english}
           className="pokemonAnimation"
-          style={{ animationDuration: `${Math.random() * 30 + 3}s` }} // Durée de l'animation aléatoire
+          style={{ animationDuration: animationDurations[pokemon.id] || '10s' }}
         />
       ))}
     </div>

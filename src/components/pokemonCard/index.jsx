@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { addFavorite, removeFavorite, getFavorites } from '../../services/api'; // Assure-toi d'importer les fonctions nécessaires
 import { toast } from 'react-toastify'; // Importer react-toastify
 
-const PokemonCard = ({ pokemon }) => {
+const PokemonCard = ({ pokemon, onToggleFavorite }) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false); // Suivi de l'état du favori
 
@@ -28,6 +28,9 @@ const PokemonCard = ({ pokemon }) => {
       await addFavorite(pokemon._id);
       setIsFavorite(true); // Met à jour l'état pour refléter le statut de favori
       toast.success(`${pokemon.name.french} ajouté aux favoris!`); // Afficher un toast
+      if (onToggleFavorite) {
+        onToggleFavorite(); // 🔁 Met à jour les favoris dans Home
+      }
     } catch (error) {
       console.error('Erreur lors de l\'ajout au favori', error);
     }
@@ -39,7 +42,10 @@ const PokemonCard = ({ pokemon }) => {
     try {
       await removeFavorite(pokemon._id);
       setIsFavorite(false); // Met à jour l'état pour refléter le retrait des favoris
-            toast.info(`${pokemon.name.french} retiré des favoris.`); // Afficher un toast
+      toast.info(`${pokemon.name.french} retiré des favoris.`); // Afficher un toast
+      if (onToggleFavorite) {
+        onToggleFavorite(); // 🔁 Met à jour les favoris dans Home
+      }
     } catch (error) {
       console.error('Erreur lors de la suppression des favoris', error);
     }
