@@ -10,7 +10,7 @@ const AnimatedFavorites = ({ favoritesList }) => {
 
     favoritesList.forEach((pokemon) => {
       if (!newDurations[pokemon.id]) {
-        newDurations[pokemon.id] = `${Math.random() * 7 + 5}s`;
+        newDurations[pokemon.id] = `${Math.random() * 7 + 10}s`;
       }
     });
 

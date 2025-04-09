@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { addFavorite, removeFavorite, getFavorites } from '../../services/api'; // Assure-toi d'importer les fonctions nécessaires
+import { addFavorite, removeFavorite, getFavorites, updatePokemon, deletePokemon } from '../../services/api'; // Assure-toi d'importer la fonction deletePokemon
 import { toast } from 'react-toastify'; // Importer react-toastify
+import { MdOutlineEdit, MdOutlineDelete } from "react-icons/md"; // Importer l'icône de la poubelle
 
 const PokemonCard = ({ pokemon, onToggleFavorite }) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false); // Suivi de l'état du favori
+  const [isEditing, setIsEditing] = useState(false); // Gère l'état d'édition
+  const [name, setName] = useState(pokemon.name.french); // Nom modifiable
+  const [stats, setStats] = useState(pokemon.stats); // Stats modifiables
 
   // Vérifier si le Pokémon est favori à chaque chargement de la carte
   useEffect(() => {
@@ -51,13 +55,84 @@ const PokemonCard = ({ pokemon, onToggleFavorite }) => {
     }
   };
 
-  // Navigation vers la page de détails du Pokémon
+  // Activer ou désactiver l'édition
+  const handleEditToggle = async (event) => {
+    event.stopPropagation();
+    setIsEditing(!isEditing);
+  };
+
+  // Enregistrer les modifications de Pokémon
+  const handleSaveChanges = async () => {
+    try {
+      // Création de l'objet contenant toutes les informations modifiées
+      const updatedPokemon = {
+        ...pokemon,  // Conserver toutes les informations existantes du Pokémon
+        name: { ...pokemon.name, french: name },  // Modifier uniquement le nom en français
+        stats: stats,  // Statistiques modifiées
+      };
+
+      // Mise à jour du Pokémon avec les informations complètes
+      await updatePokemon(pokemon._id, updatedPokemon);
+
+      setIsEditing(false);  // Désactiver le mode édition
+      toast.success('Pokémon mis à jour avec succès!');  // Afficher un toast de succès
+    } catch (error) {
+      toast.error('Erreur lors de la mise à jour du Pokémon');  // Afficher un toast d'erreur
+      console.error('Erreur lors de la mise à jour du Pokémon', error);
+    }
+  };
+
+  // Supprimer le Pokémon
+  const handleDeletePokemon = async (event) => {
+    event.stopPropagation(); // Empêche la propagation du clic pour éviter la navigation
+    try {
+      await deletePokemon(pokemon._id); // Appelle la fonction deletePokemon
+      toast.success(`${pokemon.name.french} supprimé avec succès!`);
+      // Rediriger vers la page d'accueil après suppression
+      navigate('/', { replace: true });
+    } catch (error) {
+      toast.error('Erreur lors de la suppression du Pokémon');
+      console.error('Erreur lors de la suppression du Pokémon', error);
+    }
+  };
+
+  // Modifier le nom du Pokémon
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  // Modifier les statistiques du Pokémon
+  const handleStatsChange = (stat, value) => {
+    setStats((prevStats) => ({
+      ...prevStats,
+      [stat]: value
+    }));
+  };
+
   const handleClick = () => {
     navigate(`/pokemon/${pokemon._id}`);
   };
 
   return (
     <div className="relative cursor-pointer bg-white p-4 rounded-2xl shadow-lg w-80 border border-gray-200" onClick={handleClick}>
+      {/* Icône baguette magique pour modifier le Pokémon */}
+      <div 
+        className="absolute top-2 left-2 text-xl cursor-pointer"
+        onClick={handleEditToggle}
+      >
+        <MdOutlineEdit className="w-6 h-6 text-gray-400" />
+      </div>
+
+      {/* Icône poubelle (supprimer le Pokémon) */}
+      {isEditing && (
+        <div 
+          className="absolute top-2 left-14 text-xl cursor-pointer"
+          onClick={handleDeletePokemon}
+        >
+          <MdOutlineDelete className="w-6 h-6 text-gray-400" />
+        </div>
+      )}
+
       {/* Cœur en haut à droite */}
       <div 
         className="absolute top-2 right-2 text-xl cursor-pointer"
@@ -85,8 +160,20 @@ const PokemonCard = ({ pokemon, onToggleFavorite }) => {
         />
       </div>
 
-      {/* Nom du Pokémon */}
-      <h2 className="text-xl font-bold text-center mt-2">{pokemon.name.french}</h2>
+      {/* Nom du Pokémon (Editable) */}
+      <h2 className="text-xl font-bold text-center mt-2">
+        {isEditing ? (
+          <input
+            type="text"
+            value={name}
+            onChange={handleNameChange}
+            onClick={(e) => e.stopPropagation()}
+            className="border p-1 rounded-lg w-full text-center"
+          />
+        ) : (
+          name
+        )}
+      </h2>
 
       {/* Types du Pokémon */}
       <div className="flex justify-evenly mt-2">
@@ -102,15 +189,40 @@ const PokemonCard = ({ pokemon, onToggleFavorite }) => {
         })}
       </div>
 
-      {/* Statistiques du Pokémon */}
+      {/* Statistiques du Pokémon (Editable) */}
       <div className="mt-4">
-        {Object.entries(pokemon.stats).map(([stat, value]) => (
+        {Object.entries(stats).map(([stat, value]) => (
           <div key={stat} className="flex justify-between border-b py-1">
             <span className="font-medium text-gray-700">{stat}</span>
-            <span className="font-bold text-gray-900">{value}</span>
+            {isEditing ? (
+              <input
+                type="number"
+                value={value}
+                onChange={(e) => handleStatsChange(stat, e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+                className="w-16 border p-1 rounded-lg text-center"
+              />
+            ) : (
+              <span className="font-bold text-gray-900">{value}</span>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Bouton pour enregistrer les modifications */}
+      {isEditing && (
+        <div className="mt-4 text-center">
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event propagation
+              handleSaveChanges();  // Call the function to save changes
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Enregistrer
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,10 +7,9 @@ const api = axios.create({
   baseURL: API_URL
 });
 
-// Intercepteur pour ajouter le token dans Authorization
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // peut aussi venir du context si tu préfères
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +24,7 @@ export const getAllPokemons = async (page = 1, limit = 20, searchTerm = '', sele
       page,
       limit,
       name: searchTerm,
-      type: selectedTypes.join(','), // Envoie les types sélectionnés sous forme de chaîne
+      type: selectedTypes.join(','),
     };
     const response = await api.get('/pokemons', { params });
     return response.data;
@@ -88,7 +87,7 @@ export const loginUser = async (email, password) => {
 export const registerUser = async (email, password, nom) => {
   try {
     const response = await api.post('/user/register', { email, password, nom });
-    return response.data; // Retourne les données de la réponse
+    return response.data;
   } catch (error) {
     console.error('Erreur lors de l\'inscription:', error);
     throw new Error(error.response?.data?.message || 'Erreur lors de l\'inscription');
