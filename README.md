@@ -1,5 +1,7 @@
 # Pokédex en React
 
+Vidéo du projet : `https://youtu.be/eRHQAzyFBn0`
+
 ## Description du projet
 
 Ce projet est une application front-end développée en React permettant de consulter un Pokédex interactif. L'application se connecte à une API (développée en interne) pour récupérer les informations des Pokémon : nom, type, image, statistiques, etc.
