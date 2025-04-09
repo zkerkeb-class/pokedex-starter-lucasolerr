@@ -1,0 +1,29 @@
+/* Assurez-vous que ce CSS est dans 'index.css' ou le fichier CSS de votre composant */
+.pokemonAnimationContainer {
+  position: fixed; /* Permet de fixer le conteneur au bas de l'écran */
+  bottom: 0; /* Positionne le conteneur tout en bas */
+  left: 0;
+  width: 100%;
+  height: 100px; /* Ajuste la hauteur pour qu'il soit plus petit et juste au bas */
+  overflow: hidden; /* Cache tout ce qui dépasse du conteneur */
+  z-index: 1000; /* S'assure que l'animation est au-dessus des autres éléments */
+  pointer-events: none;
+}
+
+.pokemonAnimation {
+  position: absolute;
+  bottom: 0;
+  animation: movePokemon 10s linear infinite alternate; /* Animation qui fait bouger le Pokémon de droite à gauche */
+}
+
+@keyframes movePokemon {
+  0% {
+    right: 96%; /* Départ en dehors de l'écran à gauche */
+  }
+  50% {
+    right: 0%; /* Se cogne contre le mur droite sans sortir de l'écran */
+  }
+  100% {
+    right: 96%; /* Se cogne contre le mur gauche à nouveau */
+  }
+}
